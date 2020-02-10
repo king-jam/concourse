@@ -17,6 +17,7 @@ var requiredRoles = map[string]string{
 	atc.GetCheck:                      "viewer",
 	atc.GetBuildPlan:                  "viewer",
 	atc.CreateBuild:                   "member",
+	atc.RerunJobBuild:                 "member",
 	atc.ListBuilds:                    "viewer",
 	atc.BuildEvents:                   "viewer",
 	atc.BuildResources:                "viewer",
