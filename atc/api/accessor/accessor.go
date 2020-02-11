@@ -59,7 +59,12 @@ func (a *access) IsAuthorized(team string) bool {
 }
 
 func (a *access) hasPermission(role string) bool {
-	switch a.actionRoleMap.RoleOfAction(a.action) {
+	found, roleOfAction := a.actionRoleMap.RoleOfAction(a.action)
+	if !found {
+		return false
+	}
+
+	switch roleOfAction {
 	case "owner":
 		return role == "owner"
 	case "member":

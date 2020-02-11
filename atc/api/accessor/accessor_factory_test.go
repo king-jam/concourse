@@ -109,15 +109,48 @@ var _ = Describe("AccessorFactory", func() {
 		})
 
 		It("should correctly customized", func() {
-			Expect(accessorFactory.RoleOfAction(atc.HijackContainer)).To(Equal("pipeline-operator"))
-			Expect(accessorFactory.RoleOfAction(atc.CreatePipelineBuild)).To(Equal("pipeline-operator"))
-			Expect(accessorFactory.RoleOfAction(atc.GetPipeline)).To(Equal("viewer"))
+			found, roleOfAction := accessorFactory.RoleOfAction(atc.HijackContainer)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("pipeline-operator"))
+
+			found, roleOfAction = accessorFactory.RoleOfAction(atc.CreatePipelineBuild)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("pipeline-operator"))
+
+			found, roleOfAction = accessorFactory.RoleOfAction(atc.GetPipeline)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("viewer"))
 		})
 
 		It("should keep un-customized actions", func() {
-			Expect(accessorFactory.RoleOfAction(atc.SaveConfig)).To(Equal("member"))
-			Expect(accessorFactory.RoleOfAction(atc.GetConfig)).To(Equal("viewer"))
-			Expect(accessorFactory.RoleOfAction(atc.GetCC)).To(Equal("viewer"))
+			found, roleOfAction := accessorFactory.RoleOfAction(atc.SaveConfig)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("member"))
+
+			found, roleOfAction = accessorFactory.RoleOfAction(atc.GetConfig)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("viewer"))
+
+			found, roleOfAction = accessorFactory.RoleOfAction(atc.GetCC)
+			Expect(found).To(BeTrue())
+			Expect(roleOfAction).To(Equal("viewer"))
+		})
+	})
+
+	Describe("Roles action map", func() {
+		var (
+			accessorFactory accessor.AccessFactory
+		)
+
+		BeforeEach(func() {
+			accessorFactory = accessor.NewAccessFactory(&rsa.PublicKey{})
+		})
+
+		It("contains a role for every api endpoint", func() {
+			for _, route := range atc.Routes {
+				found, _ := accessorFactory.RoleOfAction(route.Name)
+				Expect(found).To(BeTrue(), fmt.Sprintf("endpoint %s has no role", route.Name))
+			}
 		})
 	})
 })

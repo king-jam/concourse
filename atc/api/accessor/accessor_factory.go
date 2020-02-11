@@ -95,6 +95,11 @@ func (a *accessFactory) CustomizeActionRoleMap(logger lager.Logger, customMappin
 	return nil
 }
 
-func (a *accessFactory) RoleOfAction(action string) string {
-	return a.rolesActionMap[action]
+func (a *accessFactory) RoleOfAction(action string) (bool, string) {
+	role, found := a.rolesActionMap[action]
+	if !found {
+		return false, ""
+	}
+
+	return true, role
 }
